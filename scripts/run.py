@@ -1,6 +1,8 @@
 import os
 import sys
 import argparse
+import multiprocessing
+import functools
 
 
 VALIDATION_SCRIPT_PATH = "/workspace/scripts/run_validation_exp.py"
@@ -8,7 +10,6 @@ CASE_STUDIES_SCRIPT_PATH = "/workspace/scripts/run_case_studies.py"
 
 
 def print_info(message: str, flush: bool = True) -> None:
-    # Print the message in blue
     print(f"[INFO] {message}", flush=flush)
 
 def print_warning(message: str, verbose: bool = True, flush: bool = True) -> None:
@@ -23,14 +24,12 @@ def print_success(message: str, flush: bool = True) -> None:
     # Print the message in green
     print(f"\033[92m[SUCCESS] {message}\033[0m", flush=flush)
 
+
 STORAGE_SERVER_URL = "http://storage2.spcl.ethz.ch/traces/"
 ASTRASIM_URL = STORAGE_SERVER_URL + "astra-sim-traces/"
 AI_TRACE_URL = STORAGE_SERVER_URL + "ai/"
 HPC_TRACE_URL = STORAGE_SERVER_URL + "hpc/"
 CASE_STUDY_URL = STORAGE_SERVER_URL + "case-studies/"
-
-
-DOWNLOAD_CMD = 'wget -r -np -nH --cut-dirs={} -R "index.html*" -c -P "{}" "{}"'
 
 
 AI_TRACES_QUICK_TEST = ["llama/Llama7B_N4_GPU16_TP1_PP1_DP16_BS32", "llama/Llama7B_N32_GPU128_PP1_DP128_7B_BS128"]
@@ -58,6 +57,60 @@ HPC_TRACES_FULL_REPRODUCTION = [
 CASE_STUDIES_FULL_REPRODUCTION = ["storage.bin", "lulesh_random.bin", "lulesh_packed.bin", "llama_random.bin", "llama_packed.bin", "llama_lgs_vs_htsim.bin"]
 
 
+def download_trace(trace: str, data_dir: str, download_type: str) -> bool:
+    """
+    Trace downloading utility function.
+
+    Returns `True` if successful, otherwise `False` if error.
+    """
+    assert trace is not None
+    assert data_dir is not None
+    assert download_type is not None
+    
+    src_url = None
+    target_dir = None
+    cut_dirs = None
+
+    # Seems to be required because of the way they organized things on their server
+    match download_type:
+        case "ai":
+            src_url = AI_TRACE_URL + trace + "/nsys_reports/"
+            target_dir = data_dir + "/ai/" + trace
+            cut_dirs = 4
+        case "hpc":
+            src_url=HPC_TRACE_URL + trace + "/mpi_traces/"
+            target_dir=data_dir + "/hpc/" + trace
+            cut_dirs=4
+        case "as":
+            src_url=ASTRASIM_URL + trace + "/"
+            target_dir=data_dir + "/astrasim/" + trace
+            cut_dirs=3
+        case "cs":
+            src_url=CASE_STUDY_URL + trace
+            target_dir=data_dir + "/case_studies/" + trace
+            cut_dirs=4
+        case _:
+            print_error(f"Got {download_type=}. This is not valid.", flush=True)
+            return False
+
+    assert src_url is not None
+    assert target_dir is not None
+    assert cut_dirs is not None
+
+    download_command = 'wget -r -np -nH --cut-dirs={} -R "index.html*" -c -P "{}" "{}"'
+    
+    print_info(f"Downloading {trace} to {target_dir}...")
+    # Check if the directory already exists
+    if os.path.exists(target_dir):
+        print_warning(f"Skipping {trace} because it already exists...")
+        return True
+    if os.system(download_command.format(4, target_dir, src_url)) != 0:
+        print_error(f"Failed to download {trace}...")
+        return False
+    print_success(f"Downloaded {trace}...")
+    return True
+
+
 def download_data(data_dir: str, is_quick_test: bool = True) -> None:
     """
     Downloads the necessary data from the storage server based
@@ -83,68 +136,33 @@ def download_data(data_dir: str, is_quick_test: bool = True) -> None:
             print_error("Aborting...")
             exit(1)
 
-    # FIXME Code duplication
-    # Download AI traces
+    # Download AI traces in parallel
+    # You can adjust the number of processes (<=8) to avoid hammering the server.
+    # NOTE: Some downloads, like those that look at directories, will not be
+    #       parallel. This is because *wget* is walking the directory structure.
+    pool = multiprocessing.Pool(processes=8)
     print_info("Downloading AI traces...")
-    for trace in ai_traces:
-        src_url = AI_TRACE_URL + trace + "/nsys_reports/"
-        target_dir = data_dir + "/ai/" + trace
-        print_info(f"Downloading {trace} to {target_dir}...")
-        # Check if the directory already exists
-        if os.path.exists(target_dir):
-            print_warning(f"Skipping {trace} because it already exists...")
-            continue
-        if os.system(DOWNLOAD_CMD.format(4,target_dir, src_url)) != 0:
-            print_error(f"Failed to download {trace}...")
-            exit(1)
-        print_success(f"Downloaded {trace}...")
-    
+    downloader_ai = functools.partial(download_trace, data_dir=data_dir, download_type="ai")
+    results = list(pool.map(downloader_ai, ai_traces))
+    assert False not in results, "Could not download one or more files."
+            
     # Download HPC traces
     print_info("Downloading HPC traces...")
-    for trace in hpc_traces:
-        src_url = HPC_TRACE_URL + trace + "/mpi_traces/"
-        target_dir = data_dir + "/hpc/" + trace
-        print_info(f"Downloading {trace} to {target_dir}...")
-        # Check if the directory already exists
-        if os.path.exists(target_dir):
-            print_warning(f"Skipping {trace} because it already exists...")
-            continue
-        
-        if os.system(DOWNLOAD_CMD.format(4, target_dir, src_url)) != 0:
-            print_error(f"Failed to download {trace}...")
-            exit(1)
-        print_success(f"Downloaded {trace}...")
+    downloader_hpc = functools.partial(download_trace, data_dir=data_dir, download_type="hpc")
+    results = list(pool.map(downloader_hpc, hpc_traces))
+    assert False not in results, "Could not download one or more files."
 
     # Download AstraSim traces
     print_info("Downloading AstraSim traces...")
-    for trace in astrasim_traces:
-        src_url = ASTRASIM_URL + trace + "/"
-        target_dir = data_dir + "/astrasim/" + trace
-        print_info(f"Downloading {trace} to {target_dir}...")
-        # Check if the directory already exists
-        if os.path.exists(target_dir):
-            print_warning(f"Skipping {trace} because it already exists...")
-            continue
-        if os.system(DOWNLOAD_CMD.format(3, target_dir, src_url)) != 0:
-            print_error(f"Failed to download {trace}...")
-            exit(1)
-        print_success(f"Downloaded {trace}...")
-
+    downloader_as = functools.partial(download_trace, data_dir=data_dir, download_type="as")
+    results = list(pool.map(downloader_as, astrasim_traces))
+    assert False not in results, "Could not download one or more files."
 
     # Download case studies
     print_info("Downloading case studies...")
-    for trace in case_studies_traces:
-        src_url = CASE_STUDY_URL + trace
-        target_dir = data_dir + "/case_studies/" + trace
-        print_info(f"Downloading {trace} to {target_dir}...")
-        # Skip if already exists
-        if os.path.exists(target_dir):
-            print_warning(f"Skipping {trace} because it already exists...")
-            continue
-        if os.system(DOWNLOAD_CMD.format(4, data_dir + "/case_studies/", src_url)) != 0:
-            print_error(f"Failed to download {trace}...")
-            exit(1)
-        print_success(f"Downloaded {trace}...")
+    downloader_cs = functools.partial(download_trace, data_dir=data_dir, download_type="cs")
+    results = list(pool.map(downloader_cs, case_studies_traces))
+    assert False not in results, "Could not download one or more files."
 
 
 def run_full_reproduction(data_dir: str) -> None:
