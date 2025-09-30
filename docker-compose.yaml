@@ -5,3 +5,4 @@ services:
     user: "${CMP_UID?Please provide an explicit CMP_UID envvar, e.g., CMP_UID=$(id -u) CMP_GID=$(id -g).}:${CMP_GID?Please provide an explicit CMP_GID envvar, e.g., CMP_UID=$(id -u) CMP_GID=$(id -g).}"
     volumes:
       - .:/workspace:rw
+      - /workspace/sim  # Anonymous volume; should contain default from container image

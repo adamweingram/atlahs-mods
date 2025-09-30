@@ -45,4 +45,12 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 # Make the entrypoint script executable
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+# Other preparation
+RUN mkdir -p /workspace
+WORKDIR /workspace
+COPY ./sim /workspace/sim
+COPY ./prep.sh /workspace/prep.sh
+RUN bash prep.sh
+
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
