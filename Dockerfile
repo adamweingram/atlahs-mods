@@ -45,12 +45,28 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 # Make the entrypoint script executable
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Other preparation
+# Create workspace
 RUN mkdir -p /workspace
+
+# Other helpful debugging utilities
+RUN apt-get update && apt-get install -y ncdu
+
+# Set up a matching user
+ARG UNAME=testuser
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g $GID -o $UNAME
+RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
+RUN chown $UNAME:$UNAME /workspace
+USER $UNAME
+
+# Other preparation
+# COPY ./sim /workspace/sim
+# COPY ./prep.sh /workspace/prep.sh
+COPY --chown=$UNAME:$UNAME . /workspace
 WORKDIR /workspace
-COPY ./sim /workspace/sim
-COPY ./prep.sh /workspace/prep.sh
-RUN bash prep.sh
+RUN stat .git
+RUN bash prep.sh # This can take a while! (mainly because ICON takes forever to clone)
 
-
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash"]
