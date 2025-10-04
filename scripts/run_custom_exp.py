@@ -41,7 +41,7 @@ def print_info(message: str, flush: bool = True) -> None:
 
 
 def print_result(message: str, flush: bool = True) -> None:
-    print(f"[MARK] {message}", flush=flush)
+    print(f"\033[1;34m[MARK] {message}\033[0m", flush=flush)
 
 
 def write_real_runtime_to_file(
@@ -290,6 +290,17 @@ def run_custom_exp(
         assert os.system(lgs_cmd) == 0, (
             f"Error running the LGS simulator for {workload_dir}."
         )
+
+        # astrasim_cmd = f"bash {ASTRA_SIM_EXEC_SCRIPT} -i {workload_dir} -o {output_dir} -v -c {ASTRA_SIM_CONFIG_PATH} -s astra_sim -t {app_type} -e {ASTRA_SIM_EXEC_PATH}"
+        if app_type == "ai":
+            # Get the size of the bin file in MiB
+            bin_file_path = os.path.join(workload_dir, f"{workload_name}.bin")
+            assert os.path.exists(bin_file_path), (
+                f"Bin file {bin_file_path} does not exist."
+            )
+            bin_file_size = os.path.getsize(bin_file_path)
+            goal_sizes[workload_name] = bin_file_size / (1024 * 1024)
+            print_info(f"Bin size for {workload_name}: {goal_sizes[workload_name]} MiB")
 
     # Run ASTRA-Sim
     if app_type == "ai":

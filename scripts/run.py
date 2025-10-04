@@ -340,7 +340,7 @@ if __name__ == "__main__":
         run_full_reproduction(args.data_dir)
         # Add full reproduction commands
 
-    if not args.quick and not args.full:
+    if not args.quick and not args.full and not args.custom:
         print_error("No run option provided. Please use -q or -f.")
         exit(1)
 
