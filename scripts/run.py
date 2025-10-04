@@ -12,13 +12,16 @@ CASE_STUDIES_SCRIPT_PATH = "/workspace/scripts/run_case_studies.py"
 def print_info(message: str, flush: bool = True) -> None:
     print(f"[INFO] {message}", flush=flush)
 
+
 def print_warning(message: str, verbose: bool = True, flush: bool = True) -> None:
     # Print the message in yellow
     print(f"\033[93m[WARNING] {message}\033[0m", flush=flush)
 
+
 def print_error(message: str, flush: bool = True) -> None:
     # Print the message in red
     print(f"\033[91m[ERROR] {message}\033[0m", flush=flush)
+
 
 def print_success(message: str, flush: bool = True) -> None:
     # Print the message in green
@@ -32,29 +35,66 @@ HPC_TRACE_URL = STORAGE_SERVER_URL + "hpc/"
 CASE_STUDY_URL = STORAGE_SERVER_URL + "case-studies/"
 
 
-AI_TRACES_QUICK_TEST = ["llama/Llama7B_N4_GPU16_TP1_PP1_DP16_BS32", "llama/Llama7B_N32_GPU128_PP1_DP128_7B_BS128"]
-ASTRASIM_TRACES_QUICK_TEST = ["Llama7B_N4_GPU16_TP1_PP1_DP16_BS32", "Llama7B_N32_GPU128_PP1_DP128_7B_BS128"]
+AI_TRACES_QUICK_TEST = [
+    "llama/Llama7B_N4_GPU16_TP1_PP1_DP16_BS32",
+    "llama/Llama7B_N32_GPU128_PP1_DP128_7B_BS128",
+]
+ASTRASIM_TRACES_QUICK_TEST = [
+    "Llama7B_N4_GPU16_TP1_PP1_DP16_BS32",
+    "Llama7B_N32_GPU128_PP1_DP128_7B_BS128",
+]
 HPC_TRACES_QUICK_TEST = ["lulesh/lulesh_8", "icon/icon_8", "hpcg/hpcg_8"]
-CASE_STUDIES_QUICK_TEST = ["storage.bin", "lulesh_random.bin", "lulesh_packed.bin", "llama_random.bin", "llama_packed.bin", "llama_lgs_vs_htsim.bin"]
+CASE_STUDIES_QUICK_TEST = [
+    "storage.bin",
+    "lulesh_random.bin",
+    "lulesh_packed.bin",
+    "llama_random.bin",
+    "llama_packed.bin",
+    "llama_lgs_vs_htsim.bin",
+]
 
 
 AI_TRACES_FULL_REPRODUCTION = [
-    "llama/Llama7B_N4_GPU16_TP1_PP1_DP16_BS32", "llama/Llama7B_N32_GPU128_PP1_DP128_7B_BS128", "llama/Llama70B_N64_GPU256_TP1_PP8_DP32_70B_BS32", 
-    "moe/MoE8x8B_N16_GPU64_TP1_PP8_DP8_EP1_7B_BS32", "moe/MoE8x13B_N32_GPU128_TP4_PP4_DP8_EP4_13B_BS128", "moe/MoE8x70B_N64_GPU256_TP4_PP8_DP8_EP8_70B_BS128"
+    "llama/Llama7B_N4_GPU16_TP1_PP1_DP16_BS32",
+    "llama/Llama7B_N32_GPU128_PP1_DP128_7B_BS128",
+    "llama/Llama70B_N64_GPU256_TP1_PP8_DP32_70B_BS32",
+    "moe/MoE8x8B_N16_GPU64_TP1_PP8_DP8_EP1_7B_BS32",
+    "moe/MoE8x13B_N32_GPU128_TP4_PP4_DP8_EP4_13B_BS128",
+    "moe/MoE8x70B_N64_GPU256_TP4_PP8_DP8_EP8_70B_BS128",
 ]
 ASTRASIM_TRACES_FULL_REPRODUCTION = [
-    "Llama7B_N4_GPU16_TP1_PP1_DP16_BS32", "Llama7B_N32_GPU128_PP1_DP128_7B_BS128", "Llama70B_N64_GPU256_TP1_PP8_DP32_70B_BS32",
-    "MoE8x8B_N16_GPU64_TP1_PP8_DP8_EP1_7B_BS32", "MoE8x13B_N32_GPU128_TP4_PP4_DP8_EP4_13B_BS128", "MoE8x70B_N64_GPU256_TP4_PP8_DP8_EP8_70B_BS128"
+    "Llama7B_N4_GPU16_TP1_PP1_DP16_BS32",
+    "Llama7B_N32_GPU128_PP1_DP128_7B_BS128",
+    "Llama70B_N64_GPU256_TP1_PP8_DP32_70B_BS32",
+    "MoE8x8B_N16_GPU64_TP1_PP8_DP8_EP1_7B_BS32",
+    "MoE8x13B_N32_GPU128_TP4_PP4_DP8_EP4_13B_BS128",
+    "MoE8x70B_N64_GPU256_TP4_PP8_DP8_EP8_70B_BS128",
 ]
 HPC_TRACES_FULL_REPRODUCTION = [
-    "lulesh/lulesh_8", "lulesh/lulesh_27", "lulesh/lulesh_64",
-    "icon/icon_8", "icon/icon_32", "icon/icon_64",
-    "hpcg/hpcg_8", "hpcg/hpcg_32", "hpcg/hpcg_64",
-    "lammps/lammps_8", "lammps/lammps_32", "lammps/lammps_64",
-    "openmx/openmx_8", "openmx/openmx_32",
-    "cloverleaf/cloverleaf_8"
+    "lulesh/lulesh_8",
+    "lulesh/lulesh_27",
+    "lulesh/lulesh_64",
+    "icon/icon_8",
+    "icon/icon_32",
+    "icon/icon_64",
+    "hpcg/hpcg_8",
+    "hpcg/hpcg_32",
+    "hpcg/hpcg_64",
+    "lammps/lammps_8",
+    "lammps/lammps_32",
+    "lammps/lammps_64",
+    "openmx/openmx_8",
+    "openmx/openmx_32",
+    "cloverleaf/cloverleaf_8",
 ]
-CASE_STUDIES_FULL_REPRODUCTION = ["storage.bin", "lulesh_random.bin", "lulesh_packed.bin", "llama_random.bin", "llama_packed.bin", "llama_lgs_vs_htsim.bin"]
+CASE_STUDIES_FULL_REPRODUCTION = [
+    "storage.bin",
+    "lulesh_random.bin",
+    "lulesh_packed.bin",
+    "llama_random.bin",
+    "llama_packed.bin",
+    "llama_lgs_vs_htsim.bin",
+]
 
 
 def download_trace(trace: str, data_dir: str, download_type: str) -> bool:
@@ -66,7 +106,7 @@ def download_trace(trace: str, data_dir: str, download_type: str) -> bool:
     assert trace is not None
     assert data_dir is not None
     assert download_type is not None
-    
+
     src_url = None
     target_dir = None
     cut_dirs = None
@@ -78,17 +118,17 @@ def download_trace(trace: str, data_dir: str, download_type: str) -> bool:
             target_dir = data_dir + "/ai/" + trace
             cut_dirs = 4
         case "hpc":
-            src_url=HPC_TRACE_URL + trace + "/mpi_traces/"
-            target_dir=data_dir + "/hpc/" + trace
-            cut_dirs=4
+            src_url = HPC_TRACE_URL + trace + "/mpi_traces/"
+            target_dir = data_dir + "/hpc/" + trace
+            cut_dirs = 4
         case "as":
-            src_url=ASTRASIM_URL + trace + "/"
-            target_dir=data_dir + "/astrasim/" + trace
-            cut_dirs=3
+            src_url = ASTRASIM_URL + trace + "/"
+            target_dir = data_dir + "/astrasim/" + trace
+            cut_dirs = 3
         case "cs":
-            src_url=CASE_STUDY_URL + trace
-            target_dir=data_dir + "/case_studies/" + trace
-            cut_dirs=4
+            src_url = CASE_STUDY_URL + trace
+            target_dir = data_dir + "/case_studies/" + trace
+            cut_dirs = 4
         case _:
             print_error(f"Got {download_type=}. This is not valid.", flush=True)
             return False
@@ -98,7 +138,7 @@ def download_trace(trace: str, data_dir: str, download_type: str) -> bool:
     assert cut_dirs is not None
 
     download_command = 'wget -r -np -nH --cut-dirs={} -R "index.html*" -c -P "{}" "{}"'
-    
+
     print_info(f"Downloading {trace} to {target_dir}...")
     # Check if the directory already exists
     if os.path.exists(target_dir):
@@ -130,7 +170,9 @@ def download_data(data_dir: str, is_quick_test: bool = True) -> None:
         astrasim_traces = ASTRASIM_TRACES_FULL_REPRODUCTION
         case_studies_traces = CASE_STUDIES_FULL_REPRODUCTION
         # Warn the user that this would take a long time and require more than 250 GB of disk space
-        print_warning("This would take a long time and require more than 250 GB of disk space to download the workloads for the full reproduction.")
+        print_warning(
+            "This would take a long time and require more than 250 GB of disk space to download the workloads for the full reproduction."
+        )
         print_warning("Are you sure you want to continue? (y/n)")
         if input() != "y":
             print_error("Aborting...")
@@ -142,25 +184,33 @@ def download_data(data_dir: str, is_quick_test: bool = True) -> None:
     #       parallel. This is because *wget* is walking the directory structure.
     pool = multiprocessing.Pool(processes=8)
     print_info("Downloading AI traces...")
-    downloader_ai = functools.partial(download_trace, data_dir=data_dir, download_type="ai")
+    downloader_ai = functools.partial(
+        download_trace, data_dir=data_dir, download_type="ai"
+    )
     results = list(pool.map(downloader_ai, ai_traces))
     assert False not in results, "Could not download one or more files."
-            
+
     # Download HPC traces
     print_info("Downloading HPC traces...")
-    downloader_hpc = functools.partial(download_trace, data_dir=data_dir, download_type="hpc")
+    downloader_hpc = functools.partial(
+        download_trace, data_dir=data_dir, download_type="hpc"
+    )
     results = list(pool.map(downloader_hpc, hpc_traces))
     assert False not in results, "Could not download one or more files."
 
     # Download AstraSim traces
     print_info("Downloading AstraSim traces...")
-    downloader_as = functools.partial(download_trace, data_dir=data_dir, download_type="as")
+    downloader_as = functools.partial(
+        download_trace, data_dir=data_dir, download_type="as"
+    )
     results = list(pool.map(downloader_as, astrasim_traces))
     assert False not in results, "Could not download one or more files."
 
     # Download case studies
     print_info("Downloading case studies...")
-    downloader_cs = functools.partial(download_trace, data_dir=data_dir, download_type="cs")
+    downloader_cs = functools.partial(
+        download_trace, data_dir=data_dir, download_type="cs"
+    )
     results = list(pool.map(downloader_cs, case_studies_traces))
     assert False not in results, "Could not download one or more files."
 
@@ -179,7 +229,6 @@ def run_full_reproduction(data_dir: str) -> None:
     download_data(data_dir, is_quick_test=False)
 
 
-
 def run_quick_test(data_dir: str) -> None:
     """
     Run a quick functionality test of the artifact.
@@ -193,16 +242,22 @@ def run_quick_test(data_dir: str) -> None:
     """
     print_info("Running a quick functionality test...")
     download_data(data_dir, is_quick_test=True)
-    
-    assert os.path.exists(VALIDATION_SCRIPT_PATH), f"Validation script {VALIDATION_SCRIPT_PATH} does not exist."
+
+    assert os.path.exists(VALIDATION_SCRIPT_PATH), (
+        f"Validation script {VALIDATION_SCRIPT_PATH} does not exist."
+    )
     # Run the validation experiment for AI workloads
     cmd = f"python {VALIDATION_SCRIPT_PATH} -d {data_dir} -t ai --overwrite"
     print_info(f"Running command: {cmd}")
-    assert os.system(cmd) == 0, "Error running the validation experiment for AI workloads."
+    assert os.system(cmd) == 0, (
+        "Error running the validation experiment for AI workloads."
+    )
     # Run the validation experiment for HPC workloads
     cmd = f"python {VALIDATION_SCRIPT_PATH} -d {data_dir} -t hpc --overwrite"
     print_info(f"Running command: {cmd}")
-    assert os.system(cmd) == 0, "Error running the validation experiment for HPC workloads."
+    assert os.system(cmd) == 0, (
+        "Error running the validation experiment for HPC workloads."
+    )
 
     """ assert os.path.exists(CASE_STUDIES_SCRIPT_PATH), f"Case studies script {CASE_STUDIES_SCRIPT_PATH} does not exist."
     # Run the case studies validation experiment
@@ -211,12 +266,56 @@ def run_quick_test(data_dir: str) -> None:
     assert os.system(cmd) == 0, "Error running the validation experiment for case studies." """
 
 
+def run_custom_test(data_dir: str) -> None:
+    """
+    Run a custom set of experiments (make sure to set `data_dir` correctly!).
+
+    Behavior is similar to `run_quick_test`.
+    """
+    print_info("Running a custom test...")
+    download_data(data_dir, is_quick_test=True)
+
+    chosen_script = "/workspace/scripts/run_custom_exp.py"
+
+    assert os.path.exists(chosen_script), (
+        f"Validation script {chosen_script} does not exist."
+    )
+    # Run the validation experiment for AI workloads
+    cmd = f"python {chosen_script} -d {data_dir} -t ai --overwrite"
+    print_info(f"Running command: {cmd}")
+    assert os.system(cmd) == 0, (
+        "Error running the validation experiment for AI workloads."
+    )
+    # # Run the validation experiment for HPC workloads
+    # cmd = f"python {chosen_script} -d {data_dir} -t hpc --overwrite"
+    # print_info(f"Running command: {cmd}")
+    # assert os.system(cmd) == 0, (
+    #     "Error running the validation experiment for HPC workloads."
+    # )
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run the experiments needed for reproducing the results.")
-    parser.add_argument("-v", "--verbose", action="store_true", help="Print verbose output.")
-    parser.add_argument("-q", "--quick", action="store_true", help="Perform a quick functionality test.")
-    parser.add_argument("-f", "--full", action="store_true", help="Perform a full reproduction run.")
-    parser.add_argument("-d", "--data-dir", type=str, required=True, help="Directory to store the data.")
+    parser = argparse.ArgumentParser(
+        description="Run the experiments needed for reproducing the results."
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Print verbose output."
+    )
+    parser.add_argument(
+        "-q", "--quick", action="store_true", help="Perform a quick functionality test."
+    )
+    parser.add_argument(
+        "-c",
+        "--custom",
+        action="store_true",
+        help="Perform a custom set of experiments as defined in 'run_custom_exp.py'.",
+    )
+    parser.add_argument(
+        "-f", "--full", action="store_true", help="Perform a full reproduction run."
+    )
+    parser.add_argument(
+        "-d", "--data-dir", type=str, required=True, help="Directory to store the data."
+    )
     args = parser.parse_args()
 
     # Makes sure that only one of the options is provided
@@ -224,15 +323,23 @@ if __name__ == "__main__":
         print_error("Invalid option. Please use only one of -q or -f.")
         exit(1)
 
-    if args.quick:
+    if args.custom:
+        if args.quick:
+            print_warning(
+                "You seem to have selected both quick and custom! Will do ONLY one (custom, in this case), so don't be surprised!"
+            )
+
+        print_info("Performing custom experiments...")
+        run_custom_test(args.data_dir)
+    elif args.quick:
         print_info("Performing quick functionality test...")
         run_quick_test(args.data_dir)
-    
+
     if args.full:
         print_info("Performing full reproduction run...")
         run_full_reproduction(args.data_dir)
         # Add full reproduction commands
-    
+
     if not args.quick and not args.full:
         print_error("No run option provided. Please use -q or -f.")
         exit(1)

@@ -52,16 +52,19 @@ case $option in
             ;;
     esac
     ;;
-    
+
   "run")
     if [ "$#" -eq 0 ]; then
-      echo "Error: Run option requires additional arguments (-v, -q, or -f)"
+      echo "Error: Run option requires additional arguments (-v, -c, -q, or -f)"
       exit 1
     fi
-    
+
     case $1 in
-      "-q") 
+      "-q")
         python3 /workspace/scripts/run.py -v -q -d $DATA_DIR
+        ;;
+      "-c")
+        python3 /workspace/scripts/run.py --verbose --custom --data-dir $DATA_DIR
         ;;
       "-f")
         python3 /workspace/scripts/run.py -v -f -d $DATA_DIR
